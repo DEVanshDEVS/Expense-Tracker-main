@@ -1,0 +1,154 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="col-xs-10 col-sm-6 col-md-6">
+    <div class="card card-style mb-2" style="background: linear-gradient(to right, #f5fafd, #fce4ec); box-shadow: 0 4px 8px rgba(0,0,0,0.06); border-radius: 12px;">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="income_vs_expense"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-10 col-sm-6 col-md-6">
+    <div class="card card-style mb-2" style="background: linear-gradient(to right, #fff8e1, #ffe0b2); box-shadow: 0 4px 8px rgba(0,0,0,0.06); border-radius: 12px;">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="income_vs_category"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-10 col-sm-6 col-md-6">
+    <div class="card card-style mb-2" style="background: linear-gradient(to right, #f8bbd0, #fce4ec); box-shadow: 0 4px 8px rgba(0,0,0,0.06); border-radius: 12px;">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="overtime_expenditure"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Insights Section -->
+<div class="col-md-12 mt-4">
+    <div class="card card-style" style="background: linear-gradient(to right, #dbeafe, #bfdbfe); border-radius: 12px;">
+        <div class="card-body text-center">
+            <h5 class="card-title">AI Insights</h5>
+            <button id="getInsights" class="btn btn-primary">Get AI Insights</button>
+            <div id="aiOutput" class="mt-3 p-3 border rounded bg-light text-dark"
+                style="min-height: 100px; font-family: 'Arial', sans-serif; line-height: 1.6; text-align: left;">
+                <p style="color: gray;">Click the button to fetch AI-based spending insights.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascript %}
+<script>
+    let income_vs_expense_data = JSON.parse({{ income_vs_expense | tojson }});
+    let income_category_data = JSON.parse({{ income_category | tojson }});
+
+    Chart.scaleService.updateScaleDefaults('linear', {
+        ticks: { min: 0 }
+    });
+
+    let income_vs_expense_chart = new Chart(income_vs_expense, {
+        type: 'pie',
+        data: {
+            labels: ['expense', 'income'],
+            datasets: [{
+                label: "Income Vs Expenses",
+                data: income_vs_expense_data,
+                backgroundColor: ['#FF6F61', '#6B5B95'],
+                borderWidth: 1,
+                hoverBorderColor: "black",
+                hoverBorderWidth: 2,
+                hoverBackgroundColor: ['#FF8A75', '#8673B8'],
+                pointHoverRadius: 5
+            }],
+        },
+        options: {
+            title: { display: true, text: "Income Vs Expenses", fontSize: 20 },
+            legend: { position: "right", labels: { fontColor: "gray" }, display: true },
+            elements: { hitRadius: 3 }
+        }
+    });
+
+    let income_vs_category_chart = new Chart(income_vs_category, {
+        type: 'bar',
+        data: {
+            labels: ['investment', 'rent', 'salary', 'side_hustle'],
+            datasets: [{
+                label: "Categories Of Income",
+                data: income_category_data,
+                backgroundColor: ['#00C49F', '#FFBB28', '#FF8042', '#A28EFF'],
+                hoverBackgroundColor: ['#4CDBC4', '#FFD25C', '#FFA76C', '#BBA3FF'],
+                borderWidth: 1,
+                hoverBorderColor: "black",
+                hoverBorderWidth: 2,
+                pointHoverRadius: 5
+            }],
+        },
+        options: {
+            title: { display: true, text: "Income Categories", fontSize: 20 },
+            legend: { position: "right", labels: { fontColor: "gray" }, display: true },
+            elements: { hitRadius: 3 }
+        }
+    });
+
+    over_time_expenditure = JSON.parse({{ over_time_expenditure | tojson }});
+    labels = JSON.parse({{ dates_label | tojson }});
+
+    new Chart(document.getElementById("overtime_expenditure"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Expenditure Over Time",
+                data: over_time_expenditure,
+                fill: true,
+                borderColor: "rgba(54, 162, 235, 1)",
+                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                pointBackgroundColor: "rgba(255, 99, 132, 1)",
+                pointHoverBackgroundColor: "#fff",
+                lineTension: 0.3
+            }]
+        },
+        options: {
+            title: { display: true, text: "Expenditure Over Time", fontSize: 20 },
+            legend: { labels: { fontColor: "gray" } }
+        }
+    });
+
+    // AI Insights Fetching
+    document.getElementById("getInsights").addEventListener("click", function () {
+        const outputDiv = document.getElementById("aiOutput");
+        outputDiv.innerHTML = "<em>Fetching insights...</em>";
+
+        fetch("/llama_insights", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(response => response.json())
+            .then(data => {
+                let insightsText = data.insights || "No insights available.";
+                outputDiv.innerHTML = formatInsights(insightsText);
+            })
+            .catch(error => {
+                console.error("Error fetching AI insights:", error);
+                outputDiv.innerText = "Failed to fetch insights.";
+            });
+    });
+
+    function formatInsights(text) {
+        let formattedText = text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // bold
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')              // italic
+            .replace(/\n/g, '<br>');                           // line breaks
+
+        return `<p style="font-size: 16px;"><strong>Insights:</strong></p><p>${formattedText}</p>`;
+    }
+</script>
+{% endblock %}
+{% endblock %}
