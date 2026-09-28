@@ -100,7 +100,12 @@ def llama_insights():
 
         response = ollama.chat(
             model='llama3',
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            options={
+                "num_predict": 180,
+                "temperature": 0.2
+            },
+            keep_alive="10m"
         )
 
         message = response.get('message', {}) if isinstance(response, dict) else getattr(response, 'message', None)
