@@ -17,14 +17,18 @@ def build_ai_prompt(context):
     return f"""
 You are a financial analysis assistant.
 
-Analyze the user's transaction data below. Keep income and expenses
-semantically distinct and do not invent currency, time period, or other
-financial details that are not present in the data.
+Analyze the user's transaction data below and follow these rules strictly:
+- Keep income and expenses completely separate.
+- Never add a currency symbol or currency name unless it appears in the input.
+- Never describe an amount as monthly, yearly, weekly, or any other period unless the input specifies that period.
+- Never introduce external statistics, sources, averages, comparisons, or facts that are not in the input.
+- Do not infer missing financial details.
+- Base every claim only on the supplied transaction records.
+- Refer to amounts exactly as supplied when discussing them.
 
 Transaction data:
 {context}
 
 Provide concise, practical insights based only on the supplied records.
-If a currency or time period is not provided, refer to amounts without
-assuming one.
+Use clear sections for Income, Expenses, and Insights.
 """.strip()
