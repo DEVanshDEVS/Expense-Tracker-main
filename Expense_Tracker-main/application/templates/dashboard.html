@@ -45,9 +45,9 @@
 
 {% block javascript %}
 <script>
-    let income_vs_expense_data = JSON.parse({{ income_vs_expense | tojson }});
-    let expense_category_values = JSON.parse({{ expense_category_values | tojson }});
-    let expense_category_labels = JSON.parse({{ expense_category_labels | tojson }});
+    let income_vs_expense_data = {{ income_vs_expense | tojson }};
+    let expense_category_values = {{ expense_category_values | tojson }};
+    let expense_category_labels = {{ expense_category_labels | tojson }};
 
     Chart.scaleService.updateScaleDefaults('linear', {
         ticks: { min: 0 }
@@ -97,8 +97,8 @@
         }
     });
 
-    let over_time_expenditure = JSON.parse({{ over_time_expenditure | tojson }});
-    let labels = JSON.parse({{ dates_label | tojson }});
+    let over_time_expenditure = {{ over_time_expenditure | tojson }};
+    let labels = {{ dates_label | tojson }};
 
     new Chart(document.getElementById("overtime_expenditure"), {
         type: "line",
