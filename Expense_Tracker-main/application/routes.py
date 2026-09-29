@@ -3,7 +3,6 @@ from application import app, db
 from application.form import UserDataForm
 from application.models import IncomeExpenses
 from application.ai import build_financial_context, build_ai_prompt
-import json
 import ollama
 
 
@@ -79,11 +78,11 @@ def dashboard():
 
     return render_template(
         'dashboard.html',
-        income_vs_expense=json.dumps(income_expense),
-        expense_category_values=json.dumps(expense_category_values),
-        expense_category_labels=json.dumps(expense_category_labels),
-        over_time_expenditure=json.dumps(over_time_expenditure),
-        dates_label=json.dumps(dates_label)
+        income_vs_expense=income_expense,
+        expense_category_values=expense_category_values,
+        expense_category_labels=expense_category_labels,
+        over_time_expenditure=over_time_expenditure,
+        dates_label=dates_label
     )
 
 
