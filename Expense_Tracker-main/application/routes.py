@@ -2,7 +2,7 @@ from flask import render_template, url_for, redirect, flash, jsonify
 from application import app, db
 from application.form import UserDataForm
 from application.models import IncomeExpenses
-from application.ai import build_financial_context, build_ai_prompt
+from application.ai import build_financial_context, build_financial_summary, build_ai_prompt
 import ollama
 
 
@@ -95,7 +95,7 @@ def llama_insights():
             return jsonify({"insights": "No financial data available."}), 400
 
         context = build_financial_context(data)
-        prompt = build_ai_prompt(context)
+        summary = build_financial_summary(data)\n        prompt = build_ai_prompt(context, summary)
 
         response = ollama.chat(
             model='llama3',
