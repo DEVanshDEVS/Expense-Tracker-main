@@ -95,7 +95,8 @@ def llama_insights():
             return jsonify({"insights": "No financial data available."}), 400
 
         context = build_financial_context(data)
-        summary = build_financial_summary(data)\n        prompt = build_ai_prompt(context, summary)
+        summary = build_financial_summary(data)
+        prompt = build_ai_prompt(context, summary)
 
         response = ollama.chat(
             model='llama3',
