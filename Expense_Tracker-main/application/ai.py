@@ -29,6 +29,8 @@ Analyze the user's transaction data below and follow these rules strictly:
 Transaction data:
 {context}
 
-Provide concise, practical insights based only on the supplied records.
+Provide concise, practical analysis based only on the supplied records.
 Use clear sections for Income, Expenses, and Insights.
+
+In the Insights section, do not merely repeat the totals. Identify 2-4 useful patterns or observations that can be derived from the records, such as net cash flow, expense-to-income ratio, largest expense, or concentration of spending. Show the arithmetic briefly when useful. Make recommendations only when they are directly supported by the data, and do not invent goals, budgets, external benchmarks, or financial facts. With limited data, state the limitation rather than inventing a conclusion.
 """.strip()
