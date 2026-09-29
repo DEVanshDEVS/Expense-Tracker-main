@@ -102,7 +102,7 @@ def llama_insights():
             model='llama3',
             messages=[{"role": "user", "content": prompt}],
             options={
-                "num_predict": 180,
+                "num_predict": 300,
                 "temperature": 0.2
             },
             keep_alive="10m"
